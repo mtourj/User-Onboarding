@@ -57,12 +57,15 @@ export default Formik.withFormik({
   handleSubmit(values, { resetForm, setErrors, setSubmitting }) {
     if(values.email === "waffle@syrup.com"){
       setErrors({email: `${values.email} is already in use`})
+      setSubmitting(false);
     } else if(values.tos === false){
       setErrors({ tos: "Please accept the terms of service to continue." })
+      setSubmitting(false);
     }
     else {
+      console.log('ran');
       setSubmitting(true);
-    axios
+      axios
       .post("https://reqres.in/api/users")
       .then(res => {
         setSubmitting(false);
@@ -70,6 +73,8 @@ export default Formik.withFormik({
         window.alert(`Success! Account has been created at ${res.data.createdAt}, your id is ${res.data.id}`);
       })
       .catch(err => {
+        setSubmitting(false);
+        setErrors({tos: err.response})
         console.log(err);
       });
     }
